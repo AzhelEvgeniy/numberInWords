@@ -1,5 +1,7 @@
 package dictionary;
 
+import org.apache.log4j.Logger;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +13,8 @@ public class Dictionary {
     /*Композиция*/
     private Map<String, String> dictionary = new HashMap<>();
 
+    private Logger log = Logger.getLogger(Dictionary.class.getName());
+
     public Dictionary() {
     }
 
@@ -18,7 +22,7 @@ public class Dictionary {
     * Загружает файл и заполняет коллекцию Map значениями взятыми из файла.
     * @param path путь к загружаемому файлу
      */
-    public void load(String path){
+    public void load(String path) throws IOException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(path));
             while (reader.ready()){
@@ -27,7 +31,8 @@ public class Dictionary {
             }
         }
         catch (IOException ex){
-            ex.printStackTrace();
+            log.error("File path " + path + " not find.");
+            throw new IOException("File path " + path + " not find.", ex);
         }
     }
 

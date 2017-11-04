@@ -4,6 +4,8 @@ import dictionary.Dictionary;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 public class ConverterTest {
     Converter converter;
     @Before
@@ -11,7 +13,7 @@ public class ConverterTest {
         converter = new Converter();
     }
     @Test
-    public void toWord_test(){
+    public void toWord_test() throws IOException{
         Dictionary dictionary = new Dictionary();
         dictionary.load("src/main/resources/test.txt");
         for (String key : dictionary.keySet()) {

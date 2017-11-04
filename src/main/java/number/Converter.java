@@ -3,6 +3,7 @@ package number;
 import dictionary.Dictionary;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,16 +43,21 @@ public class Converter {
     @result текстовый формат числа
      */
     public String toWords(BigInteger number) {
-        StringBuilder result = new StringBuilder();
-        numberStringFormat = String.valueOf(number);
-        //загрузка файла со словами эквивалентные цифрам
-        dictionary.load(PATH_DICTIONARY);
-        //проверка на отрицательность и нулевое значение
-        result.append(minusAndZero());
-        //синтаксический разбор строки
-        result = parser(result);
-        log.info("Converted number " + number + " in words " + result.toString());
-        return result.toString();
+        try {
+            StringBuilder result = new StringBuilder();
+            numberStringFormat = String.valueOf(number);
+            //загрузка файла со словами эквивалентные цифрам
+            dictionary.load(PATH_DICTIONARY);
+            //проверка на отрицательность и нулевое значение
+            result.append(minusAndZero());
+            //синтаксический разбор строки
+            result = parser(result);
+            log.info("Converted number " + number + " in words " + result.toString());
+            return result.toString();
+        } catch (IOException ex){
+            log.error("A dictionary with words equivalent to numbers was not loaded.");
+            throw new RuntimeException("A dictionary with words equivalent to numbers was not loaded.");
+        }
     }
 
     /*
