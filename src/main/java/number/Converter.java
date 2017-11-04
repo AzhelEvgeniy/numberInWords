@@ -1,0 +1,262 @@
+package number;
+
+import dictionary.Dictionary;
+import org.apache.log4j.Logger;
+
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+public class Converter {
+    /*Const*/
+    private final static char ZERO = '0';
+    private final static char MINUS = '-';
+    private final static String PATH_DICTIONARY = "src/main/resources/dictionary.txt";
+    private final static String DEGREE_OF_TEN = "10^";
+
+    private String numberStringFormat;
+    private Logger log = Logger.getLogger(Converter.class.getName());
+    private Dictionary dictionary = new Dictionary();
+    /*Overloading*/
+    public String toWords(int number) {
+        return toWords(BigInteger.valueOf(number));
+    }
+
+    public String toWords(long number) {
+        return toWords(BigInteger.valueOf(number));
+    }
+
+    public String toWords(String number) {
+        try {
+            return toWords(new BigInteger(number));
+        } catch (NumberFormatException ex) {
+            log.error("Invalid input format " + number);
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
+    }
+
+    /*
+    * Метод конвентирует число в слова.
+    @param number число, которое будет комвертироваться в текстовый формат.
+    @result текстовый формат числа
+     */
+    public String toWords(BigInteger number) {
+        StringBuilder result = new StringBuilder();
+        numberStringFormat = String.valueOf(number);
+        //загрузка файла со словами эквивалентные цифрам
+        dictionary.load(PATH_DICTIONARY);
+        //проверка на отрицательность и нулевое значение
+        result.append(minusAndZero());
+        //синтаксический разбор строки
+        result = parser(result);
+        log.info("Converted number " + number + " in words " + result.toString());
+        return result.toString();
+    }
+
+    /*
+    * Метод рекурсивно выполняет синтаксический разбор строки
+    * от первого до последнего символа в числе.
+     */
+    private StringBuilder parser(StringBuilder result){
+        if(numberStringFormat.length() == 0) return result;
+        switch (numberStringFormat.length()) {
+            //единицы
+            case 1:
+                result.append(units());
+                correctString(result);
+                return result;
+            //десятки
+            case 2:
+                result.append(ten());
+                break;
+            //сотни
+            case 3:
+                result.append(hundreds());
+                break;
+            //тысячные
+            case 4:
+                result.append(thousands());
+                break;
+            default:
+                //числа больше тысячнах имеют закономерность
+                switch ((numberStringFormat.length() - 1) % 3) {
+                    //милионы, милиарды, трилиарды и т.д.
+                    //данные числа имеют закономерность в склонениях
+                    case 0:
+                        result.append(other());
+                        break;
+                    //десяти-
+                    case 1:
+                        result.append(ten());
+                        break;
+                    //сто-
+                    case 2:
+                        //если сто-, десяти-, -ионны равны 0, то данные разряды пропускаются
+                        if (numberStringFormat.substring(0, 3).equals("000"))
+                            numberStringFormat = numberStringFormat.substring(3);
+                        else
+                            result.append(hundreds());
+                        break;
+                }
+        }
+        result = parser(result);
+        return result;
+    }
+
+    public static void main(String[] args) {
+        Converter converter = new Converter();
+        converter.toWords(121241241);
+    }
+
+    /*
+    * Метод проверяет отрицательное ли число или равняется ли нулю.
+    * Если чилс отрицательное, то метод возращает строку "минус",
+    * иначе пустую строку.
+    * Ecли число равняется нулю то возращается ноль и размер строки
+    * становится равным нулю.
+     */
+    private String minusAndZero() {
+        String result = "";
+        if (numberStringFormat.charAt(0) == MINUS) {
+            result = dictionary.get(String.valueOf(MINUS)) + " ";
+            numberStringFormat = deleteFirstChartInString(numberStringFormat);
+        } else if (numberStringFormat.charAt(0) == ZERO && numberStringFormat.length()==1) {
+            result = dictionary.get(String.valueOf(ZERO));
+            numberStringFormat = deleteFirstChartInString(numberStringFormat);
+        }
+        return result;
+    }
+
+    /*
+    * Метод возращает строку в текстовом формаце(цифра словом)
+    * эвивалентную первому символу в строке в числовом формате.
+    * @return строку единичного разряда в текстовом формате
+     */
+    private String units() {
+        if (numberStringFormat.charAt(0) != ZERO) {
+            return dictionary.get(numberStringFormat.substring(0, 1));
+        }
+        return "";
+    }
+
+    /*
+    * Метод возращает строку в текстовом формаце(цифра словом)
+    * эвивалентную первому символу в строке в числовом формате.
+    * Исключением являются цифры от 10 до 19, которые возращают
+    * строку в текстовом формаце эвивалентную двум символам,
+    * и если первый символ в строке равен "0" то данный разряд пропускается,
+    * т.е. возращает пустую строку.
+    * @return строку разряда десятков в текстовом формате
+     */
+    private String ten() {
+        String result;
+        switch (numberStringFormat.charAt(0)) {
+            case ZERO:
+                result = "";
+                break;
+            case '1':
+                result = dictionary.get(numberStringFormat.substring(0, 2)) + " ";
+                numberStringFormat = replaceCharAt(numberStringFormat, 1, ZERO);
+                break;
+            default:
+                result = dictionary.get(ceilNumberInStringFormat(numberStringFormat.substring(0, 2), 1)) + " ";
+                break;
+        }
+        numberStringFormat = deleteFirstChartInString(numberStringFormat);
+        return result;
+    }
+
+    /*
+    * Метод возращает строку в текстовом формаце(цифра словом)
+    * эвивалентную первому символу в строке в числовом формате.
+    * Исключением является если первый символ в строке равен "0",
+     * то данный разряд пропускается, т.е. возращается пустая строка.
+    * @return строку разряда сотых в текстовом формате
+     */
+    private String hundreds() {
+        String result;
+        if (numberStringFormat.charAt(0) != ZERO)
+            result = dictionary.get(
+                    ceilNumberInStringFormat(numberStringFormat.substring(0, 3), 2)) + " ";
+        else result = "";
+        numberStringFormat = deleteFirstChartInString(numberStringFormat);
+        return result;
+    }
+
+    /*
+    * Метод возращает строку в текстовом формаце(цифра словом)
+    * эвивалентную первому символу в строке в числовом формате.
+    * Исключением является числа от 1000 до 4000, у которых отличаются окончания
+    * от остальных тысячных, так же если первый символ в строке равен "0",
+    * то данный разряд пропускается, т.е. возращается пустая строка.
+    * @return строку разряда тысяных в текстовом формате
+     */
+    private String thousands() {
+        String result;
+        String degreeOfTen = DEGREE_OF_TEN + (numberStringFormat.length() - 1);
+        if (numberStringFormat.charAt(0) == ZERO) result = dictionary.get(degreeOfTen) + " ";
+        else if (numberStringFormat.charAt(0) >= '1' && numberStringFormat.charAt(0) <= '4')
+            result = dictionary.get(ceilNumberInStringFormat(numberStringFormat, numberStringFormat.length() - 1)) + " ";
+        else
+            result = units() + " " + dictionary.get(degreeOfTen) + " ";
+
+        numberStringFormat = deleteFirstChartInString(numberStringFormat);
+        return result;
+    }
+
+    /*
+    * Метод возращает строку в текстовом формаце(цифра словом)
+    * эвивалентную первому символу в строке в числовом формате.
+    * @return строку разряда 10^n (n%3 == 0) в текстовом формате
+     */
+    private String other() {
+        String result;
+        String degreeOfTen = DEGREE_OF_TEN + (numberStringFormat.length() - 1);
+        if (numberStringFormat.charAt(0) == ZERO)
+            result = dictionary.get(degreeOfTen) + "ов" + " ";
+        else if (numberStringFormat.charAt(0) == '1')
+            result = units() + " " + dictionary.get(degreeOfTen) + " ";
+        else if (numberStringFormat.charAt(0) >= '2' && numberStringFormat.charAt(0) <= '4')
+            result = units() + " " + dictionary.get(degreeOfTen) + "а" + " ";
+        else
+            result = units() + " " + dictionary.get(degreeOfTen) + "ов" + " ";
+
+        numberStringFormat = deleteFirstChartInString(numberStringFormat);
+        if (result.contains("null")) throw new NullPointerException("The number of a given degree is not in the dictionary " + degreeOfTen);
+        return result;
+    }
+
+    /*
+    * Метод заменяет нулями n знаков до запятой без округления.
+    * Возращает округленное число в строковом формате.
+     */
+    private String ceilNumberInStringFormat(String numberStringFormat, int n) {
+        long number = Long.valueOf(numberStringFormat);
+        //округленное число
+        long ceilNumber = (long) (((long) (number / Math.pow(10, n))) * Math.pow(10, n));
+        return String.valueOf(ceilNumber);
+    }
+
+    /*
+    * Данный метод удаляет лишние пробелы
+     */
+    private void correctString(StringBuilder result) { //TODO исправить добавление пробелов
+        if (result.charAt(result.length() - 1) == ' ')
+            result.deleteCharAt(result.length() - 1);
+    }
+
+    /*
+    * Удаляет первый символ из строки.
+     */
+    private String deleteFirstChartInString(final String str) {
+        return str.substring(1);
+    }
+
+    /*
+    * Заменяет n-ый символ в строк на указанный.
+    */
+    private String replaceCharAt(String s, int pos, char c) {
+        return s.substring(0, pos) + c + s.substring(pos + 1);
+    }
+}
