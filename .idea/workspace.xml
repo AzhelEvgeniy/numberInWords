@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1a5a5629-cd0a-4d0d-a6de-ac454c9ca41b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/dictionary/Dictionary.java" afterPath="$PROJECT_DIR$/src/main/java/dictionary/Dictionary.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/number/Converter.java" afterPath="$PROJECT_DIR$/src/main/java/number/Converter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/number/ConverterTest.java" afterPath="$PROJECT_DIR$/src/test/java/number/ConverterTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/test.txt" afterPath="$PROJECT_DIR$/target/classes/test.txt" />
-    </list>
+    <list default="true" id="1a5a5629-cd0a-4d0d-a6de-ac454c9ca41b" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,7 +16,7 @@
       <file leaf-file-name="Converter.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/number/Converter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
+            <state relative-caret-position="-374">
               <caret line="15" column="54" lean-forward="false" selection-start-line="15" selection-start-column="54" selection-end-line="15" selection-end-column="54" />
               <folding>
                 <element signature="method#toWords#2;class#Converter#0" expanded="false" />
@@ -121,7 +115,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-7" />
     <option name="width" value="697" />
     <option name="height" value="735" />
@@ -466,7 +460,7 @@
       <workItem from="1509717683816" duration="2363000" />
       <workItem from="1509728531889" duration="16180000" />
       <workItem from="1509787542917" duration="5995000" />
-      <workItem from="1509799631039" duration="939000" />
+      <workItem from="1509799631039" duration="1187000" />
     </task>
     <servers />
   </component>
@@ -503,10 +497,10 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="55834000" />
+    <option name="totallyTimeSpent" value="56082000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -861,7 +855,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/number/Converter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
+        <state relative-caret-position="-374">
           <caret line="15" column="54" lean-forward="false" selection-start-line="15" selection-start-column="54" selection-end-line="15" selection-end-column="54" />
           <folding>
             <element signature="method#toWords#2;class#Converter#0" expanded="false" />
